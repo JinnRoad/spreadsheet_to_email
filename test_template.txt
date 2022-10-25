@@ -1,0 +1,35 @@
+Dear Professor {Faculty Last Name},
+
+Use brackets to insert fields.
+This is a paragraph.
+You can put sentences in a paragraph on separate lines.
+The translation will put them into a paragraph for you.
+
+Paragraphs are separated by a blank line.
+Paragraphs are separated by a blank line.
+Paragraphs are separated by a blank line.
+
+Here is a table:
+
+Label 1 | Label 2
+-|-
+Item | Item
+Item | Item
+Item | Item
+
+{table}
+
+- Bulleted list.
+- Bulleted list.
+- Bulleted list.
+
+1. Numbered list. (You can just use the number 1. It'll increment the numbers for you.)
+1. Numbered list.
+1. Numbered list.
+
+**Bold Name**<br>
+*Italicized Position Title*<br>
+Address<br>
+Address<br>
+Address<br>
+Pronouns: They, Their, Them
