@@ -33,12 +33,6 @@ import csv
 import os
 import sys
 
-TESTING = True
-LIMIT = 9001
-
-if TESTING:
-    pass
-
 try:
     import win32com.client as win32
 except ModuleNotFoundError:
@@ -49,7 +43,10 @@ try:
 except ModuleNotFoundError:
     os.system('python -m pip install pypandoc')
 
+# UI variables
 #template, csv, attachment = sys.argv[1:4]
+TESTING = True
+LIMIT = 9001
 template_file = 'test_template.txt'
 style_file = 'style.css'
 csv_file = 'test_csv.csv'
@@ -69,11 +66,10 @@ def main():
         if send_count == LIMIT:
             break
         email = format_template(template_file, style, students)
-        exit()
-        email = TEST_EMAIL if TESTING else femail
+        #email = TEST_EMAIL if TESTING else femail
         #send_email(email, subject, body)
-        print(f'recipient: {email:50}student count: {len(students)}')
-    print(f'emals sent: {send_count+1}')
+        print(f'recipient: {femail:50}student count: {len(students)}')
+    print(f'\ntotal emails sent: {send_count+1}')
 
 def read_csv(csv_file):
     with open(csv_file) as file:
@@ -93,9 +89,6 @@ def format_template(template_file, style, students):
     format_dict['table'] = make_table(students)
     email = template.format(**format_dict)
     return style + md2html(email)
-    #greeting_ = greeting.format(**students[0])
-    #table = make_table(students)
-    #return style + md2html('\n\n'.join((greeting_, intro, table, outro)))
 
 def make_students_by_professor(email_col, cols, rows):
     students_by_femail = {}
@@ -112,11 +105,6 @@ def make_students_by_professor(email_col, cols, rows):
         students_by_femail[femail] = sorted(students_by_femail[femail], key=lambda x: x['CRN'])
 
     return students_by_femail
-
-def get_template(template):
-    with open(template, encoding='utf-8') as email:
-        email = ''.join(email.readlines())
-        print(email)
 
 def make_body(femail, students):
     greeting_ = greeting.format(**students[0])
