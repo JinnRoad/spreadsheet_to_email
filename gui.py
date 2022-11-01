@@ -1,11 +1,20 @@
 from tkinter import *
 
+# layout
+#   template name
+#   csv
+#   attachment
+
 window = Tk()
 window.title('Spreadsheet to Email')
+Entry(text='XYZ'),
 
+elements = []
+
+template = Label(text='template file')
+elements.extend([template,])
 
 for element in (
-    Entry(text='Send'),
     Button(text='Send'),
     Label(text='label'),
     ):
@@ -15,6 +24,6 @@ for element in (
 #print(email.get())
 
 
-#window.geometry('1000x1000+10+20')
+window.geometry('1000x1000+10+20')
 
 window.mainloop()
