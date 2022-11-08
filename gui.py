@@ -1,41 +1,52 @@
-""" reference material
-tkinter
--   https://tkdocs.com/tutorial/intro.html
--   https://realpython.com/python-gui-tkinter/
--   https://preettheman.medium.com/build-beautiful-software-with-python-be7c074bcbd4
-kivy
--   https://realpython.com/mobile-app-kivy-python/
-"""
+# TODO remove sticky to see what happens
+# TODO select first browse button
+# TODO file manager button
 
 from tkinter import *
+from tkinter import ttk
+from tkinter import filedialog
 
 # layout
-#   template name
-#   csv
-#   attachment
+#   Files
+#       Template   |||| [BROWSE]
+#       CSV        |||| [BROWSE]
+#       Attachment |||| [BROWSE]
+#   Testing Configuration
+#       ???
+#   [OK] [CANCEL]
+
+# Positions
+col_label = 1
+col_entry = 2
+col_button = 3
+row_files = 1
+row_template = 2
 
 def main():
-    window = Tk()
-    window.title('Spreadsheet to Email')
-    Entry(text='XYZ'),
 
-    elements = []
+    root = Tk()
+    root.title('Speadsheet Slicer-dicer')
 
-    template = Label(text='template file')
-    elements.extend([template,])
+    mainframe = ttk.Frame(root, padding='3 3 12 12')
+    mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+    root.columnconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
 
-    for element in (
-        Button(text='Send'),
-        Label(text='label'),
-        ):
-        element.pack()
+    # Files
+    ttk.Label(mainframe, text='Files').grid(column=col_label, row=row_files, sticky=W) # Span
 
-    #print(email.insert('hi'))
-    #print(email.get())
+    # Template
+    template = StringVar()
+    template_entry = ttk.Entry(mainframe, width=50, textvariable=template)
+    template_entry.grid(column=col_entry, row=row_template, sticky=(W, E))
+    ttk.Label(mainframe, text='Template').grid(column=col_label, row=row_template, sticky=W)
+    ttk.Button(mainframe, text='Browse', command=lambda *args: None).grid(column=col_button, row=row_template, sticky=W)
 
+    filename = filedialog t
 
-    window.geometry('1000x1000+10+20')
+    for child in mainframe.winfo_children():
+        child.grid_configure(padx=5, pady=5)
 
-    window.mainloop()
+    root.mainloop()
 
-#main()
+main()
