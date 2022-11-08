@@ -1,3 +1,12 @@
+""" reference material
+tkinter
+-   https://tkdocs.com/tutorial/intro.html
+-   https://realpython.com/python-gui-tkinter/
+-   https://preettheman.medium.com/build-beautiful-software-with-python-be7c074bcbd4
+kivy
+-   https://realpython.com/mobile-app-kivy-python/
+"""
+
 from tkinter import *
 
 # layout
@@ -5,25 +14,28 @@ from tkinter import *
 #   csv
 #   attachment
 
-window = Tk()
-window.title('Spreadsheet to Email')
-Entry(text='XYZ'),
+def main():
+    window = Tk()
+    window.title('Spreadsheet to Email')
+    Entry(text='XYZ'),
 
-elements = []
+    elements = []
 
-template = Label(text='template file')
-elements.extend([template,])
+    template = Label(text='template file')
+    elements.extend([template,])
 
-for element in (
-    Button(text='Send'),
-    Label(text='label'),
-    ):
-    element.pack()
+    for element in (
+        Button(text='Send'),
+        Label(text='label'),
+        ):
+        element.pack()
 
-#print(email.insert('hi'))
-#print(email.get())
+    #print(email.insert('hi'))
+    #print(email.get())
 
 
-window.geometry('1000x1000+10+20')
+    window.geometry('1000x1000+10+20')
 
-window.mainloop()
+    window.mainloop()
+
+#main()
