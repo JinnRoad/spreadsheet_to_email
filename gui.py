@@ -1,52 +1,61 @@
-# TODO remove sticky to see what happens
-# TODO select first browse button
-# TODO file manager button
-
 from tkinter import *
-from tkinter import ttk
 from tkinter import filedialog
+from tkinter import ttk
+import sys
 
-# layout
-#   Files
-#       Template   |||| [BROWSE]
-#       CSV        |||| [BROWSE]
-#       Attachment |||| [BROWSE]
-#   Testing Configuration
-#       ???
-#   [OK] [CANCEL]
+root = Tk()
+root.title('Speadsheet Slicer-dicer')
 
-# Positions
-col_label = 1
-col_entry = 2
-col_button = 3
-row_files = 1
-row_template = 2
+files = {'email': StringVar(), 'csv': StringVar(), 'attachment': StringVar()}
 
 def main():
 
-    root = Tk()
-    root.title('Speadsheet Slicer-dicer')
-
     mainframe = ttk.Frame(root, padding='3 3 12 12')
     mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-    root.columnconfigure(0, weight=1)
-    root.rowconfigure(0, weight=1)
+    root.columnconfigure(0, weight=5)
+    root.rowconfigure(0, weight=5)
 
-    # Files
-    ttk.Label(mainframe, text='Files').grid(column=col_label, row=row_files, sticky=W) # Span
+    # Buttons
+    b1 = ttk.Button(mainframe, text='Browse', command=lambda: browse_button('email'))
+    b2 = ttk.Button(mainframe, text='Browse', command=lambda: browse_button('csv'))
+    b3 = ttk.Button(mainframe, text='Browse', command=lambda: browse_button('attachment'))
+    b4 = ttk.Button(mainframe, text='Send Emails', command=send_emails)
 
-    # Template
-    template = StringVar()
-    template_entry = ttk.Entry(mainframe, width=50, textvariable=template)
-    template_entry.grid(column=col_entry, row=row_template, sticky=(W, E))
-    ttk.Label(mainframe, text='Template').grid(column=col_label, row=row_template, sticky=W)
-    ttk.Button(mainframe, text='Browse', command=lambda *args: None).grid(column=col_button, row=row_template, sticky=W)
+    # Labels
+    l1 = ttk.Label(mainframe, text='Files')
+    l2 = ttk.Label(mainframe, text='Email Template')
+    l3 = ttk.Label(mainframe, text='CSV File')
+    l4 = ttk.Label(mainframe, text='Attachment')
+    l5 = ttk.Label(mainframe, textvariable=files['email'])
+    l6 = ttk.Label(mainframe, textvariable=files['csv'])
+    l7 = ttk.Label(mainframe, textvariable=files['attachment'])
 
-    filename = filedialog t
+    # Label positions
+    l1.grid(column=1, row=1, sticky=W)  # Title
+    l2.grid(column=1, row=2, sticky=W)  # Email label
+    b1.grid(column=2, row=2, sticky=W)  # Email browse button
+    l5.grid(column=3, row=2, sticky=W)  # Email filename
+    l3.grid(column=1, row=3, sticky=W)  # CSV label
+    b2.grid(column=2, row=3, sticky=W)  # CSV browse button
+    l6.grid(column=3, row=3, sticky=W)  # CSV filename
+    l4.grid(column=1, row=4, sticky=W)  # Attachment label
+    b3.grid(column=2, row=4, sticky=W)  # Attachment browse button
+    l7.grid(column=3, row=4, sticky=W)  # Attachment filename
+    b4.grid(column=1, row=5, sticky=W)  # Okay
 
     for child in mainframe.winfo_children():
         child.grid_configure(padx=5, pady=5)
 
     root.mainloop()
+
+def browse_button(file):
+    """folder path = StringVar()"""
+    files[file].set(filedialog.askopenfile(
+        title=f'Select {file}',
+        filetypes=(('All files', '*.*'),)
+        ).name)
+
+def send_emails():
+    print(*files.items(), sep='\n', end='\n\n', flush=True)
 
 main()
