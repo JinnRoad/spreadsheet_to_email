@@ -8,7 +8,7 @@ table_cols = ('CRN', 'Subject and Course Number', 'Student ID', 'Student Last Na
 
 import csv
 import os
-import sys
+import pathlib
 
 try:
     import win32com.client as win32
@@ -24,15 +24,17 @@ except ModuleNotFoundError:
 LIMIT = 9001
 
 # Test values
+pwd = pathlib.Path(__file__).parent
 subject = 'Enter email subject line'
-email_file = 'test_template.txt'
-css_file = 'style.css'
-csv_file = 'test_csv.csv'
-attachment_file = 'test_attachment.pdf'
+email_file = pwd / 'test_template.txt'
+css_file = pwd / 'style.css'
+csv_file = pwd / 'test_csv.csv'
+attachment_file = pwd / 'test_attachment.pdf'
 
 def main(subject, email_file, css_file, csv_file, attachment_file, test):
     # Make column name strings globally available
     global sid, sfirst, smid, slast, flast, ffirst, femail, crn, title, course, term
+    if test: test_message()
 
     # Read CSV
     cols, students_by_femail = read_csv(csv_file)
@@ -44,11 +46,9 @@ def main(subject, email_file, css_file, csv_file, attachment_file, test):
     print('`'*(20 + len(header)))
     student_count = 0
     for send_count, (femail, students) in enumerate(students_by_femail.items()):
-        #if send_count == LIMIT:
-            #break
-        email = format_template(email_file, style, students)
+        body = format_email_body(email_file, style, students)
         if not test:
-            send_email(email, subject, body)
+            send_email(femail, subject, body, attachment_file)
         student_count += len(students)
         print(f'{len(students):^13}    {femail}')
     print()
@@ -66,7 +66,7 @@ def read_style(css_file):
     with open(css_file) as file:
         return ''.join(file.readlines())
 
-def format_template(email_file, style, students):
+def format_email_body(email_file, style, students):
     with open(email_file) as file:
         template = ''.join(file.readlines())
     format_dict = students[0]
@@ -116,14 +116,20 @@ def make_table(students):
 def make_row(student):
     return '|'.join(student[col] for col in table_cols)
 
-def send_email(to, subject, body):
+def send_email(to, subject, body, attachment):
     outlook = win32.Dispatch('outlook.application')
     mail = outlook.CreateItem(0)
     mail.To = to
     mail.Subject = subject
     mail.HTMLBody = body
-    mail.Attachments.Add(attachment_file)
+    mail.Attachments.Add(attachment)
     mail.Send()
+
+def test_message():
+    print(30*'-')
+    print(f'testing from {__name__}')
+    print(30*'-')
 
 if __name__ == '__main__':
     main(subject, email_file, css_file, csv_file, attachment_file, test=True)
+

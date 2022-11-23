@@ -17,6 +17,10 @@ Item | Item
 Item | Item
 Item | Item
 
+---
+
+And this is the inserted table from the test CSV file.
+
 {table}
 
 - Bulleted list.

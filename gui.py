@@ -89,14 +89,19 @@ def test():
     files['attachment'].set(emailer.attachment_file)
 
 def send(event=None):
+    if files['test'].get(): test_message()
+    if __name__ == '__main__': print(*((k, v.get()) for k, v in files.items()), sep='\n')
     for key, var in files.items():
         files[key] = var.get()
-        if __name__ == '__main__':
-            print(key, var.get())
     root.destroy()
 
 def flip(key):
     files[key].set(not files[key].get())
+
+def test_message():
+    print(30*'-')
+    print(f'testing from {__name__}')
+    print(30*'-')
 
 if __name__ == '__main__':
     main()

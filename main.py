@@ -1,4 +1,5 @@
 # TODO Test sending out actual emails to your gmail
+# TODO Make button to restore defaults
 # TODO Build GUI with kivy
 # TODO Somehow either make the header_length variable unnecessary or automatic
 # TODO Is the limit variable necessary
