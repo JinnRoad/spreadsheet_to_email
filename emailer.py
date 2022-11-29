@@ -5,6 +5,7 @@ Will install pypiwin32 and pypandoc if not already installed.
 
 header_length = 11  # Number of items in the CSV header
 table_cols = ('CRN', 'Subject and Course Number', 'Student ID', 'Student Last Name', 'Student First Name')
+('CRN': 'CRN', 'Subject and Course Number', 'Student ID', 'Student Last Name', 'Student First Name')
 
 import csv
 import os
@@ -112,6 +113,10 @@ def make_table(students):
     hline = make_row(dict(zip(table_cols, ['-']*len(table_cols))))
     rows = [make_row(student) for student in students]
     return '\n'.join([header] + [hline] + rows)
+
+l1 = (a, b, c)
+l2 = (1, 2, 3)
+zip(l1, l2) # ( (a, 1), (b, 2)
 
 def make_row(student):
     return '|'.join(student[col] for col in table_cols)
