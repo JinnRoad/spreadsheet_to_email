@@ -1,0 +1,4 @@
+- [x]	Use python to send emails via Microsoft Outlook.
+- [x]	Slice and dice CSV into email files.
+- [x]	Create a GUI.
+- [ ]	Package GUI into executable because CLIs are not usable by most folks.
