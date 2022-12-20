@@ -8,7 +8,7 @@ def main():
     root.title('Speadsheet Slicer-dicer')
 
     files = {'subject': StringVar(), 'email': StringVar(), 'css': StringVar(), 'csv': StringVar(), 'attachment': StringVar(), 'test': BooleanVar(value=True)}
-    test()
+    set_defaults()
 
     mainframe = ttk.Frame(root, padding='3 3 12 12')
     root.columnconfigure(0, weight=5)
@@ -80,7 +80,7 @@ def browse_button(file):
         filetypes=(('All files', '*.*'),)
         ).name)
 
-def test():
+def set_defaults():
     import emailer
     files['subject'].set(emailer.subject)
     files['email'].set(emailer.email_file)
@@ -89,8 +89,6 @@ def test():
     files['attachment'].set(emailer.attachment_file)
 
 def send(event=None):
-    if files['test'].get(): test_message()
-    if __name__ == '__main__': print(*((k, v.get()) for k, v in files.items()), sep='\n')
     for key, var in files.items():
         files[key] = var.get()
     root.destroy()
@@ -98,10 +96,12 @@ def send(event=None):
 def flip(key):
     files[key].set(not files[key].get())
 
-def test_message():
-    print(30*'-')
-    print(f'testing from {__name__}')
-    print(30*'-')
+def inspect_gui(func):
+    def decorator(*args, **kwargs):
+        print(*((k, v.get()) for k, v in files.items()), sep='\n')
+        func(*args, **kwargs)
+    return decorator
 
 if __name__ == '__main__':
+    send = inspect_gui(send)  # Decorate send(): Inspect inputs collected by GUI.
     main()

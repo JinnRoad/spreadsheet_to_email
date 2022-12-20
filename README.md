@@ -1,5 +1,35 @@
 #	Spreadsheet mail merge project for SOAR
 
+##	Use
+
+The assignment file `access.log` must be in the same directory as the script, then run:
+
+
+##	Run instructions
+
+###	Test Run
+
+Test the program from the terminal using:
+
+	$ python main.py
+
+The GUI will start up.
+The default input files already populate all the input fields.
+Press `SPACE` to hit the "Send emails" button.
+
+
+###	Send emails
+
+Open Microsoft Outlook and login to an account.
+
+Run the program.
+
+	$ python main.py
+
+- Uncheck the button `Test: Don't actually send the email`.
+- Create your own email template.
+- Use your own CSV file.
+
 ##	Directory contents
 
 Documentation
@@ -7,19 +37,20 @@ Documentation
 -	README.md   # This file
 -	todo.md     # A list of to-do's for the project
 
-
 Program files
 
--	main.py     # Entry point for script
--	gui.py      # Runs GUI and collects document names
--	emailer.py  # Emailer tranforms the documents into emails, which are then sent
--	style.css   # Default CSS file
+-	main.py       # Entry point for script
+-	gui.py        # Runs GUI and collects document names
+-	emailer.py    # Emailer tranforms the documents into emails, which are then sent
+-	inspector.py  # Inspect inputs and outputs of functions
+-	style.css     # Default CSS file
 
 Test files for running the code
 
 -	test_attachment.pdf
 -	test_csv.csv
 -	test_template.txt
+
 
 
 ##	Project plan
@@ -37,10 +68,9 @@ This process had to be completed more than once a semester, each time requiring 
 ###	Pseudocode
 
 	Level 0 Outline
-		Collect data files
+		Use GUI to collect information, such as the list of emails, email template file, etc.
 		Convert data files into HTML files containing a formatted email
 		Send each HTML file as an email via Microsoft Outlook
-
 
 	Level 1 Outline
 		Open GUI to collect information
@@ -58,10 +88,23 @@ This process had to be completed more than once a semester, each time requiring 
 
 ###	Modules used
 
--	csv: Reading CSVs.
--	os: Installing libraries for the user if they aren't already installed.
+-	csv: Read CSVs.
+-	os: Install libraries for the user if they aren't already installed.
+-	pandoc:  Convert from Markdown to HTML.
 -	pathlib: Sensible filepath syntax.
--	pypandoc: Conversion from Markdown to HTML.
--	tkinter: Creating GUI.
--	win32: Hooking into Microsoft Outlook to send emails.
+-	pypandoc: Python API to Pandoc.
+-	tkinter: GUI framework.
+-	win32: Hook into Microsoft Outlook to send emails.
 
+##	Goals
+
+- [x] Use a CSV file to automatically send emails.
+- [x] Package the program into a GUI.
+
+##	Citations
+
+1. CSV Library. Python.org. https://docs.python.org/3/library/csv.html
+1. PyPandoc. https://pypi.org/project/pypandoc/
+1. Tkinter. File Browser. TutorialsPoint.com. https://www.tutorialspoint.com/creating-a-browse-button-with-tkinter
+1. Tkinter. RealPython.com. https://realpython.com/python-gui-tkinter/
+1. Win32. Microsoft Outlook. https://win32com.goermezer.de/microsoft/ms-office/send-email-with-outlook-and-python.html

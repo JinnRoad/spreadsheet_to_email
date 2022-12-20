@@ -1,9 +1,8 @@
 Dear Professor {Faculty Last Name},
 
-Use brackets to insert fields.
-This is a paragraph.
+Use curly brackets to insert fields from the spreadsheet.
 You can put sentences in a paragraph on separate lines.
-The translation will put them into a paragraph for you.
+Markdown will understand them as belonging in one continuous paragraph.
 
 Paragraphs are separated by a blank line.
 Paragraphs are separated by a blank line.

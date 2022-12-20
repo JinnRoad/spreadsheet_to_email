@@ -1,6 +1,6 @@
 """
+Converts a CSV file to emails to send to professors.
 Will install pypiwin32 and pypandoc if not already installed.
-
 """
 
 header_length = 11  # Number of items in the CSV header
@@ -20,9 +20,6 @@ try:
 except ModuleNotFoundError:
     os.system('python -m pip install pypandoc')
 
-# UI variables
-LIMIT = 9001
-
 # Test values
 pwd = pathlib.Path(__file__).parent
 subject = 'Enter email subject line'
@@ -32,89 +29,69 @@ csv_file = pwd / 'test_csv.csv'
 attachment_file = pwd / 'test_attachment.pdf'
 
 def main(subject, email_file, css_file, csv_file, attachment_file, test):
-    # Make column name strings globally available
-    global sid, sfirst, smid, slast, flast, ffirst, femail, crn, title, course, term
-    if test: test_message()
-
     # Read CSV
-    cols, students_by_femail = read_csv(csv_file)
-    sid, sfirst, smid, slast, flast, ffirst, femail, crn, title, course, term = cols[:header_length]
+    faculty2students = read_csv(csv_file)
 
     # Make emails
     style = read_style(css_file)
-    print(header := f'student count    recipient')
-    print('`'*(20 + len(header)))
     student_count = 0
-    for send_count, (femail, students) in enumerate(students_by_femail.items()):
-        body = format_email_body(email_file, style, students)
+    print_header()
+    for email_count, (faculty_email, students) in enumerate(faculty2students.items()):
+        body = format_email_body(email_file, style, students, table_cols)
         if not test:
-            send_email(femail, subject, body, attachment_file)
+            send_email(faculty_email, subject, body, attachment_file)
         student_count += len(students)
-        print(f'{len(students):^13}    {femail}')
-    print()
-    print(f'{send_count+1:>3} emails sent')
-    print(f'{student_count:>3} students')
+        print(f'{len(students):^13}    {faculty_email}')
+    print_footer(email_count, student_count)
 
 def read_csv(csv_file):
+    """Pass student info CSV to transformation function and return result."""
     with open(csv_file) as file:
-        rows = csv.reader(file)
-        cols = next(rows)
-        email_col = cols[6]  # email column string
-        return cols, make_students_by_professor(email_col, cols, rows)
+        csv_obj = csv.reader(file)
+        col_names = next(csv_obj)  # Get
+        faculty2students = make_faculty2students(col_names, csv_obj)
+        return faculty2students
+
+def make_faculty2students(keys, rows_of_vals):
+    """Transform student info csv into dictionary where keys are faculty emails."""
+    faculty2students = {}
+    for row_of_vals in rows_of_vals:
+        student = dict(zip(keys, row_of_vals))
+        if (faculty_email := student['Faculty Email']) not in faculty2students:
+            faculty2students[faculty_email] = []
+        faculty2students[faculty_email].append(student)
+    # Sort the student list by CRN
+    for students in faculty2students.values():
+        students.sort(key = lambda student: student['CRN'])
+    return faculty2students
 
 def read_style(css_file):
     with open(css_file) as file:
         return ''.join(file.readlines())
 
-def format_email_body(email_file, style, students):
+def format_email_body(email_file, style, students, table_cols):
+    """Apply format dictionary to email template."""
     with open(email_file) as file:
         template = ''.join(file.readlines())
-    format_dict = students[0]
-    format_dict['table'] = make_table(students)
+    # Create a string format dictionary from the first student.
+    format_dict = dict(students[0])
+    # Create the table
+    format_dict['table'] = make_table(students, table_cols)
     email = template.format(**format_dict)
-    return style + md2html(email)
+    email_html = pypandoc.convert_text(email, 'html', format='md')
+    return style + email_html
 
-def make_students_by_professor(email_col, cols, rows):
-    students_by_femail = {}
-    for row in rows:
-        student = dict(zip(cols, row))
-        femail = student[email_col]
-        if femail not in students_by_femail:
-            students_by_femail[femail] = [student]
-        else:
-            students_by_femail[femail].append(student)
+def make_table(students, table_cols):
+    """Create HTML table."""
+    header = make_row(table_cols)
+    hline = make_row(['-']*len(table_cols))
+    row_cells = [[student[key] for key in table_cols] for student in students]
+    rows = [make_row(cell) for cell in row_cells]
+    table = '\n'.join([header] + [hline] + rows)
+    return table
 
-    # Sort the student list by CRN
-    for femail in students_by_femail:
-        students_by_femail[femail] = sorted(students_by_femail[femail], key=lambda x: x['CRN'])
-
-    return students_by_femail
-
-def make_body(femail, students):
-    greeting_ = greeting.format(**students[0])
-    table = make_table(students)
-    return style + md2html('\n\n'.join((greeting_, intro, table, outro)))
-
-def md2html(string):
-    return pypandoc.convert_text(string, 'html', format='md')
-
-def make_table_(students):
-    header = make_row(dict(zip(table_cols, table_cols)))
-    rows = '\n'.join([header] + [make_row(student) for student in students])
-    return f'<table>\n{rows}\n</table>'
-
-def make_row_(student):
-    values = (student[col] for col in table_cols)
-    return '<tr>' + ''.join(f'<td>{value}</td>' for value in values) + '</tr>'
-
-def make_table(students):
-    header = make_row(dict(zip(table_cols, table_cols)))
-    hline = make_row(dict(zip(table_cols, ['-']*len(table_cols))))
-    rows = [make_row(student) for student in students]
-    return '\n'.join([header] + [hline] + rows)
-
-def make_row(student):
-    return '|'.join(student[col] for col in table_cols)
+def make_row(cells):
+    return '|'.join(cell for cell in cells)
 
 def send_email(to, subject, body, attachment):
     outlook = win32.Dispatch('outlook.application')
@@ -125,10 +102,17 @@ def send_email(to, subject, body, attachment):
     mail.Attachments.Add(attachment)
     mail.Send()
 
-def test_message():
-    print(30*'-')
-    print(f'testing from {__name__}')
-    print(30*'-')
+def print_header():
+    print(header := f'student count    recipient')
+    print('-'*(20 + len(header)))
+
+def print_footer(send_count, student_count):
+    print()
+    print(f'{send_count+1:>3} emails sent')
+    print(f'{student_count:>3} students')
+
+#import inspector
+#inspector.apply_decorator(globals())
 
 if __name__ == '__main__':
     main(subject, email_file, css_file, csv_file, attachment_file, test=True)
